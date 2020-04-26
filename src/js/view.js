@@ -14,12 +14,19 @@ export default class View {
     this.requestRender = 0;
     this.counter = 0;
     this.init();
+    this.render();
   }
 
   init() {
-    document
-      .getElementById("time")
-      .addEventListener("click", this.handleClick.bind(this));
+    document.getElementsByTagName("html")[0].style.width = "100%";
+    document.getElementsByTagName("html")[0].style.height = "100%";
+
+    document.getElementsByTagName("body")[0].style.width = "100%";
+    document.getElementsByTagName("body")[0].style.height = "100%";
+
+    document.addEventListener("click", (e) => {
+      console.log("target clicked", e.target.id);
+    });
   }
 
   handleClick() {
@@ -39,7 +46,11 @@ export default class View {
   render() {
     const { counter } = this.model;
 
-    document.getElementById("time").innerText = `${counter}`;
+    const html = `
+    <div id="wrapper">
+        <span>test</span>
+    </div>`;
+    this.container.innerHTML = html;
     //this.container.innerHTML = `${hours}:${minutes}:${seconds}`;
     this.requestRender = 0;
     console.log("render()");
