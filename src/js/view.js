@@ -2,7 +2,15 @@ import { h, init } from "snabbdom";
 import toVNode from "snabbdom/es/tovnode";
 import props from "snabbdom/es/modules/props";
 import Model from "./model";
+import { makeElement } from "./tools";
+import { makeParsedElement } from "./tools";
 
+let itemStr = `<div id="item1" style=display:flex;flex-direction:row;padding:15px;justify-content:space-between; > <input type=text value=newTodo > <button id=remove innerText=- >`;
+let itemParse = `
+  <div id="item" style="display:flex;flex-direction:row;padding:15px;justify-content:space-between;">
+    <input type="text" value="new todo"></input>
+    <button id="remove">-</button>
+  </div>`;
 const patch = init([props]);
 
 export default class View {
@@ -18,14 +26,33 @@ export default class View {
   }
 
   init() {
+    console.log("make", makeParsedElement(itemParse));
     document.getElementsByTagName("html")[0].style.width = "100%";
     document.getElementsByTagName("html")[0].style.height = "100%";
 
     document.getElementsByTagName("body")[0].style.width = "100%";
     document.getElementsByTagName("body")[0].style.height = "100%";
 
+    this.model.contents = [
+      makeParsedElement(itemParse),
+      makeParsedElement(itemParse),
+    ];
+    this.model.test = [];
+
     document.addEventListener("click", (e) => {
       console.log("target clicked", e.target.id);
+      if (e.target.id === "add") {
+        const newItem = makeParsedElement(itemParse);
+        console.log("add new item", newItem);
+
+        document.getElementById("contents").appendChild(newItem);
+      }
+
+      if (e.target.id === "remove") {
+        console.log(e);
+        const deleteItem = e.target.parentNode;
+        document.getElementById("contents").removeChild(deleteItem);
+      }
     });
   }
 
@@ -44,13 +71,55 @@ export default class View {
   }
 
   render() {
-    const { counter } = this.model;
+    const { containers } = this.model;
+    const { indexes } = this.model;
+
+    console.log("containers", indexes);
 
     const html = `
-    <div id="wrapper">
-        <span>test</span>
+    <div id="wrapper" style="width: 100%;
+    background: #f3f1ea;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;">
+        <div id="todoContainer" style="
+        width: 30%;
+        height: 60%;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 4px;
+background: #f3f1ea;
+box-shadow: inset 5px 5px 10px #d1cfc9, 
+            inset -5px -5px 10px #ffffff;">
+          <div id="todoTitle" style="
+          text-align: center;
+          height: 10%;
+          display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 15px;
+    justify-content: space-between;">
+      <div>ToDo</div>
+      <button id="add">+</button>
+    </div>
+        </div>
     </div>`;
     this.container.innerHTML = html;
+    for (let key in containers) {
+      if (document.getElementById(key) === null) {
+        const newCon = document.createElement("div");
+        newCon.id = key;
+
+        document.getElementById("todoContainer").appendChild(newCon);
+      }
+      console.log("in", containers[key]);
+      containers[key].forEach((elem) => {
+        document.getElementById(key).appendChild(elem);
+      });
+    }
+
     //this.container.innerHTML = `${hours}:${minutes}:${seconds}`;
     this.requestRender = 0;
     console.log("render()");
