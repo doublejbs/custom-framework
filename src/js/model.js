@@ -17,7 +17,7 @@ export default class Model {
           if (target["containers"] === undefined)
             target["containers"] = { [property]: value };
           else target["containers"][property] = value;
-          console.log("this", this);
+
           this.indexes.push(property);
         } else target[property] = value;
         console.log("target", target);
