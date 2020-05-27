@@ -23,6 +23,32 @@ export default class View {
     this.counter = 0;
     this.init();
     this.render();
+    this.items = [];
+  }
+
+  // add(items, model) {
+  //   return this.handleAdd(e, items, model);
+  // }
+
+  add(items, model) {
+    return function (e) {
+      console.log("target clicked", e.target.id);
+      if (e.target.id === "add") {
+        const newItem = makeParsedElement(itemParse);
+        console.log("add new item", newItem);
+        console.log("type", typeof model["contents"]);
+        console.log("this", model);
+        // document.getElementById("contents").appendChild(newItem);
+        items.push(itemParse);
+        model.contents = [...items];
+      }
+
+      if (e.target.id === "remove") {
+        console.log(e);
+        const deleteItem = e.target.parentNode;
+        document.getElementById("contents").removeChild(deleteItem);
+      }
+    };
   }
 
   init() {
@@ -33,27 +59,12 @@ export default class View {
     document.getElementsByTagName("body")[0].style.width = "100%";
     document.getElementsByTagName("body")[0].style.height = "100%";
 
-    this.model.contents = [
-      makeParsedElement(itemParse),
-      makeParsedElement(itemParse),
-    ];
-    this.model.test = [];
+    this.items = [];
+    this.items.push(itemParse);
+    this.model.contents = this.items;
+    // this.model.test = [];
 
-    document.addEventListener("click", (e) => {
-      console.log("target clicked", e.target.id);
-      if (e.target.id === "add") {
-        const newItem = makeParsedElement(itemParse);
-        console.log("add new item", newItem);
-
-        document.getElementById("contents").appendChild(newItem);
-      }
-
-      if (e.target.id === "remove") {
-        console.log(e);
-        const deleteItem = e.target.parentNode;
-        document.getElementById("contents").removeChild(deleteItem);
-      }
-    });
+    document.addEventListener("click", this.add(this.items, this.model));
   }
 
   handleClick() {
@@ -71,6 +82,7 @@ export default class View {
   }
 
   render() {
+    console.log("render!");
     const { containers } = this.model;
     const { indexes } = this.model;
 
@@ -116,7 +128,7 @@ box-shadow: inset 5px 5px 10px #d1cfc9,
       }
       console.log("in", containers[key]);
       containers[key].forEach((elem) => {
-        document.getElementById(key).appendChild(elem);
+        document.getElementById(key).appendChild(makeParsedElement(elem));
       });
     }
 
