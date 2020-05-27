@@ -39,14 +39,20 @@ export default class View {
         console.log("type", typeof model["contents"]);
         console.log("this", model);
         // document.getElementById("contents").appendChild(newItem);
-        items.push(itemParse);
+        newItem.setAttribute("order", items.length);
+        items.push(newItem);
         model.contents = [...items];
       }
 
       if (e.target.id === "remove") {
-        console.log(e);
+        console.log("order", e.target.parentNode.getAttribute("order"));
         const deleteItem = e.target.parentNode;
-        document.getElementById("contents").removeChild(deleteItem);
+        items = items.filter(
+          (item) =>
+            item.getAttribute("order") !== deleteItem.getAttribute("order")
+        );
+        model.contents = [...items];
+        // document.getElementById("contents").removeChild(deleteItem);
       }
     };
   }
@@ -60,7 +66,7 @@ export default class View {
     document.getElementsByTagName("body")[0].style.height = "100%";
 
     this.items = [];
-    this.items.push(itemParse);
+    this.items.push(makeParsedElement(itemParse));
     this.model.contents = this.items;
     // this.model.test = [];
 
@@ -128,7 +134,7 @@ box-shadow: inset 5px 5px 10px #d1cfc9,
       }
       console.log("in", containers[key]);
       containers[key].forEach((elem) => {
-        document.getElementById(key).appendChild(makeParsedElement(elem));
+        document.getElementById(key).appendChild(elem);
       });
     }
 
