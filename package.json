@@ -15,7 +15,7 @@
     "webpack-dev-server": ">=3.1.11"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "react-uuid": "^1.0.2",
     "snabbdom": "^0.7.1",
     "uuid": "^8.1.0"
